@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client {
@@ -14,11 +15,24 @@ public class Client {
         Socket socket = new Socket(SERVER_IP , SERVER_PORT);
 
         BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
 
-        String response = input.readLine();
+        PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
 
-        JOptionPane.showMessageDialog(null,response);
+        while(true) {
+            System.out.println(">");
 
+            String command = keyboard.readLine();
+
+            if(command.equals("quit"))
+                break;
+
+            out.println(command);
+
+            String response = input.readLine();
+
+            System.out.println(response);
+        }
         socket.close();
     }
 }

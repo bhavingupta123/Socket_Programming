@@ -1,4 +1,6 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,11 +21,24 @@ public class DateServer {
         System.out.println("server conneceed to client");
 
         PrintWriter out = new PrintWriter(client.getOutputStream(),true);
-        out.println((new Date()).toString());
+        BufferedReader in = new BufferedReader( new InputStreamReader(client.getInputStream()));
 
-        System.out.println("data send server");
+        try {
+            while (true) {
+                String request = in.readLine();
 
-        client.close();
-        listener.close();
+                if (request.contains("date"))
+                    out.println((new Date()).toString());
+                else
+                    out.println("type date");
+
+                System.out.println("data send server");
+            }
+        }
+        finally {
+            out.close();
+            in.close();
+        }
+
     }
 }
